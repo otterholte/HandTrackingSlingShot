@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Slingshot - Hand Tracking Game</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <h1 class="game-title">NEON SLINGSHOT</h1>
+            <p class="subtitle">HAND TRACKING</p>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+            <p class="loader-text">Initializing...</p>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" class="hidden">
+        <h1 class="game-title flicker">NEON SLINGSHOT</h1>
+        <p class="subtitle">HAND TRACKING EDITION</p>
+        <div class="menu-buttons">
+            <button id="start-btn" class="neon-btn">START GAME</button>
+            <button id="levels-btn" class="neon-btn">SELECT LEVEL</button>
+            <button id="instructions-btn" class="neon-btn">HOW TO PLAY</button>
+        </div>
+    </div>
+
+    <!-- Level Select -->
+    <div id="level-select" class="hidden">
+        <h2 class="section-title">SELECT LEVEL</h2>
+        <div class="level-grid">
+            <button class="level-btn" data-level="1">
+                <span class="level-number">01</span>
+                <span class="level-name">Tutorial</span>
+            </button>
+            <button class="level-btn locked" data-level="2">
+                <span class="level-number">02</span>
+                <span class="level-name">First Shot</span>
+            </button>
+            <button class="level-btn locked" data-level="3">
+                <span class="level-number">03</span>
+                <span class="level-name">Stack Attack</span>
+            </button>
+            <button class="level-btn locked" data-level="4">
+                <span class="level-number">04</span>
+                <span class="level-name">Fortress</span>
+            </button>
+            <button class="level-btn locked" data-level="5">
+                <span class="level-number">05</span>
+                <span class="level-name">High Rise</span>
+            </button>
+            <button class="level-btn locked" data-level="6">
+                <span class="level-number">06</span>
+                <span class="level-name">Moving Target</span>
+            </button>
+            <button class="level-btn locked" data-level="7">
+                <span class="level-number">07</span>
+                <span class="level-name">Domino</span>
+            </button>
+            <button class="level-btn locked" data-level="8">
+                <span class="level-number">08</span>
+                <span class="level-name">Pyramid</span>
+            </button>
+            <button class="level-btn locked" data-level="9">
+                <span class="level-number">09</span>
+                <span class="level-name">The Wall</span>
+            </button>
+            <button class="level-btn locked" data-level="10">
+                <span class="level-number">10</span>
+                <span class="level-name">Final Boss</span>
+            </button>
+        </div>
+        <button id="back-to-menu" class="neon-btn small">BACK TO MENU</button>
+    </div>
+
+    <!-- Instructions -->
+    <div id="instructions" class="hidden">
+        <h2 class="section-title">HOW TO PLAY</h2>
+        <div class="instructions-content">
+            <div class="instruction-item">
+                <div class="gesture-icon pinch"></div>
+                <p><strong>Pinch</strong> your thumb and index finger together to grab the projectile</p>
+            </div>
+            <div class="instruction-item">
+                <div class="gesture-icon pull"></div>
+                <p><strong>Pull back</strong> while pinching to aim and charge your shot</p>
+            </div>
+            <div class="instruction-item">
+                <div class="gesture-icon release"></div>
+                <p><strong>Release</strong> your fingers to launch the projectile</p>
+            </div>
+            <div class="instruction-item">
+                <div class="gesture-icon wave"></div>
+                <p><strong>Hit the targets</strong> to complete each level and earn stars</p>
+            </div>
+        </div>
+        <button id="back-from-instructions" class="neon-btn small">BACK TO MENU</button>
+    </div>
+
+    <!-- Game Container -->
+    <div id="game-container" class="hidden">
+        <canvas id="game-canvas"></canvas>
+        
+        <!-- Video Feed (for hand tracking) -->
+        <video id="video-feed" autoplay playsinline></video>
+        <canvas id="hand-canvas"></canvas>
+        
+        <!-- Game HUD -->
+        <div id="game-hud">
+            <div class="hud-left">
+                <div class="level-info">
+                    <span class="label">LEVEL</span>
+                    <span class="value" id="current-level">01</span>
+                </div>
+                <span class="level-name-display" id="level-name-hud">Tutorial</span>
+            </div>
+            <div class="hud-center">
+                <div class="score-display">
+                    <span class="label">SCORE</span>
+                    <span class="value" id="score">0</span>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="shots-info">
+                    <span class="label">SHOTS</span>
+                    <span class="value" id="shots-remaining">3</span>
+                </div>
+                <button id="pause-btn" class="icon-btn">⏸</button>
+            </div>
+        </div>
+        
+        <!-- Hand Status -->
+        <div id="hand-status">
+            <div id="hand-indicator" class="disconnected"></div>
+            <span id="hand-status-text">Connecting...</span>
+        </div>
+        
+        <!-- Gesture Indicator -->
+        <div id="gesture-indicator">
+            <span id="gesture-text">Ready</span>
+        </div>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay" class="hidden">
+        <div id="tutorial-content"></div>
+    </div>
+
+    <!-- Pause Menu Overlay -->
+    <div id="pause-menu" class="overlay hidden">
+        <div class="overlay-content">
+            <h2>PAUSED</h2>
+            <button id="resume-btn" class="neon-btn">RESUME</button>
+            <button id="restart-btn" class="neon-btn">RESTART</button>
+            <button id="quit-btn" class="neon-btn">QUIT TO MENU</button>
+        </div>
+    </div>
+
+    <!-- Level Complete Overlay -->
+    <div id="level-complete" class="overlay hidden">
+        <div class="overlay-content">
+            <h2>LEVEL COMPLETE!</h2>
+            <div class="stars-display">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+            </div>
+            <div class="final-score">
+                <span class="label">SCORE</span>
+                <span class="value" id="final-score-value">0</span>
+            </div>
+            <button id="next-level-btn" class="neon-btn">NEXT LEVEL</button>
+            <button id="replay-btn" class="neon-btn">REPLAY</button>
+            <button id="menu-btn" class="neon-btn">MENU</button>
+        </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="game-over" class="overlay hidden">
+        <div class="overlay-content">
+            <h2>GAME OVER</h2>
+            <p class="game-over-message">Out of shots!</p>
+            <button id="retry-btn" class="neon-btn">RETRY</button>
+            <button id="game-over-menu-btn" class="neon-btn">MENU</button>
+        </div>
+    </div>
+
+    <!-- Global Controls -->
+    <div id="global-controls">
+        <button id="music-toggle" class="global-toggle-btn">
+            <span class="toggle-icon">🔇</span>
+            <span class="toggle-label">Music</span>
+        </button>
+        <button id="hand-toggle" class="global-toggle-btn active">
+            <span class="toggle-icon">✋</span>
+            <span class="toggle-label">Hand</span>
+        </button>
+    </div>
+
+    <!-- Menu Hand Cursor -->
+    <div id="menu-hand-cursor" class="hidden">
+        <div class="cursor-ring"></div>
+        <div class="cursor-dot"></div>
+    </div>
+
+    <!-- MediaPipe Hands -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    
+    <!-- Matter.js Physics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+    <!-- Game Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/handTracking.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/slingshot.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

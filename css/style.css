@@ -1,0 +1,1004 @@
+/* ========================================
+   NEON SLINGSHOT - Cyberpunk Styles
+   ======================================== */
+
+:root {
+    /* Neon Colors */
+    --neon-cyan: #00f5ff;
+    --neon-magenta: #ff00ff;
+    --neon-yellow: #ffff00;
+    --neon-orange: #ff6600;
+    --neon-green: #00ff88;
+    --neon-pink: #ff1493;
+    
+    /* Background Colors */
+    --bg-dark: #0a0a0f;
+    --bg-purple: #1a0a2e;
+    --bg-gradient: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0f0f1a 100%);
+    
+    /* UI Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #8888aa;
+    --overlay-bg: rgba(10, 10, 15, 0.95);
+    
+    /* Glow Effects */
+    --glow-cyan: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+    --glow-magenta: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta), 0 0 40px var(--neon-magenta);
+    --glow-orange: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange), 0 0 40px var(--neon-orange);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Grid Background Pattern */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+
+.game-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+    letter-spacing: 0.2em;
+    animation: titlePulse 2s ease-in-out infinite;
+}
+
+.subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+    color: var(--neon-magenta);
+    text-shadow: var(--glow-magenta);
+    letter-spacing: 0.5em;
+    margin-top: 0.5rem;
+}
+
+.section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+}
+
+@keyframes titlePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* ========================================
+   LOADING SCREEN
+   ======================================== */
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-gradient);
+    z-index: 1000;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-bar {
+    width: 300px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin: 2rem auto;
+    overflow: hidden;
+}
+
+.loader-progress {
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+    box-shadow: var(--glow-cyan);
+    transition: width 0.5s ease;
+}
+
+.loader-text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========================================
+   MAIN MENU
+   ======================================== */
+
+#main-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+
+.neon-btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 1rem 3rem;
+    background: transparent;
+    color: var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    letter-spacing: 0.1em;
+}
+
+.neon-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.neon-btn:hover {
+    background: rgba(0, 245, 255, 0.1);
+    box-shadow: var(--glow-cyan);
+    transform: scale(1.05);
+}
+
+.neon-btn:hover::before {
+    left: 100%;
+}
+
+.neon-btn:active {
+    transform: scale(0.98);
+}
+
+.neon-btn.small {
+    font-size: 1rem;
+    padding: 0.75rem 2rem;
+}
+
+/* ========================================
+   TUTORIAL COUNTDOWN
+   ======================================== */
+
+#tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    pointer-events: none;
+}
+
+.tutorial-step {
+    text-align: center;
+    animation: tutorialFadeIn 0.5s ease;
+}
+
+@keyframes tutorialFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tutorial-icon {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    animation: tutorialPulse 1s ease-in-out infinite;
+}
+
+@keyframes tutorialPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.tutorial-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.tutorial-subtext {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.tutorial-countdown {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8rem;
+    font-weight: 900;
+    color: var(--neon-magenta);
+    text-shadow: var(--glow-magenta);
+    animation: countdownPop 0.5s ease;
+}
+
+@keyframes countdownPop {
+    0% {
+        opacity: 0;
+        transform: scale(2);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tutorial-go {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--neon-green);
+    text-shadow: 0 0 20px var(--neon-green), 0 0 40px var(--neon-green);
+    animation: goFlash 0.5s ease;
+}
+
+@keyframes goFlash {
+    0% {
+        opacity: 0;
+        transform: scale(3);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tutorial-waiting {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    color: var(--neon-orange);
+    margin-top: 1.5rem;
+    animation: waitingPulse 1s ease-in-out infinite;
+}
+
+@keyframes waitingPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Simple hand prompt (non-intrusive) */
+.hand-prompt {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 10px;
+    box-shadow: var(--glow-cyan);
+}
+
+.hand-prompt.ready {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 20px var(--neon-green);
+}
+
+.hand-prompt .prompt-icon {
+    font-size: 2.5rem;
+}
+
+.hand-prompt .prompt-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+}
+
+.hand-prompt.ready .prompt-text {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green);
+}
+
+.icon-btn {
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+    background: rgba(0, 245, 255, 0.1);
+    box-shadow: var(--glow-cyan);
+}
+
+/* ========================================
+   LEVEL SELECT
+   ======================================== */
+
+#level-select {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.level-btn {
+    width: 140px;
+    height: 140px;
+    background: rgba(0, 245, 255, 0.05);
+    border: 2px solid var(--neon-cyan);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.level-btn .level-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+}
+
+.level-btn .level-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.level-btn:hover:not(.locked) {
+    background: rgba(0, 245, 255, 0.15);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-5px);
+}
+
+.level-btn.locked {
+    border-color: var(--text-secondary);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.level-btn.locked::after {
+    content: '🔒';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2rem;
+}
+
+.level-btn.completed {
+    border-color: var(--neon-green);
+}
+
+.level-btn.completed .level-number {
+    color: var(--neon-green);
+}
+
+/* ========================================
+   INSTRUCTIONS
+   ======================================== */
+
+#instructions {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.instructions-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 800px;
+    margin-bottom: 2rem;
+}
+
+.instruction-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(0, 245, 255, 0.05);
+    border: 1px solid rgba(0, 245, 255, 0.3);
+}
+
+.gesture-icon {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--neon-magenta);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.gesture-icon.pinch::before { content: '🤏'; font-size: 1.8rem; }
+.gesture-icon.pull::before { content: '✊'; font-size: 1.8rem; }
+.gesture-icon.release::before { content: '🖐️'; font-size: 1.8rem; }
+.gesture-icon.wave::before { content: '👋'; font-size: 1.8rem; }
+
+.instruction-item p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.instruction-item strong {
+    color: var(--neon-cyan);
+}
+
+/* ========================================
+   GAME CONTAINER
+   ======================================== */
+
+#game-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+}
+
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#video-feed {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 200px;
+    height: 150px;
+    border: 2px solid var(--neon-cyan);
+    border-radius: 8px;
+    transform: scaleX(-1);
+    z-index: 10;
+    opacity: 0.8;
+}
+
+#hand-canvas {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 200px;
+    height: 150px;
+    border-radius: 8px;
+    z-index: 11;
+    pointer-events: none;
+    transform: scaleX(-1);
+}
+
+/* ========================================
+   GAME HUD
+   ======================================== */
+
+#game-hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 20;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
+}
+
+.hud-left, .hud-center, .hud-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.level-info, .score-display, .shots-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.2em;
+}
+
+.value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+}
+
+.level-name-display {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: var(--neon-magenta);
+    text-shadow: var(--glow-magenta);
+}
+
+/* ========================================
+   HAND STATUS & GESTURE
+   ======================================== */
+
+#hand-status {
+    position: absolute;
+    bottom: 180px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    z-index: 20;
+}
+
+#hand-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+#hand-indicator.connected {
+    background: var(--neon-green);
+    box-shadow: 0 0 10px var(--neon-green);
+}
+
+#hand-indicator.disconnected {
+    background: #ff4444;
+    box-shadow: 0 0 10px #ff4444;
+}
+
+#hand-status-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+#gesture-indicator {
+    position: absolute;
+    bottom: 220px;
+    left: 20px;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 0, 255, 0.2);
+    border: 1px solid var(--neon-magenta);
+    border-radius: 4px;
+    z-index: 20;
+}
+
+#gesture-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: var(--neon-magenta);
+    text-shadow: var(--glow-magenta);
+}
+
+/* ========================================
+   OVERLAYS
+   ======================================== */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--overlay-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    backdrop-filter: blur(10px);
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(26, 10, 46, 0.8);
+    border: 2px solid var(--neon-cyan);
+    box-shadow: var(--glow-cyan);
+}
+
+.overlay-content h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+    margin-bottom: 2rem;
+}
+
+.overlay-content .neon-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* ========================================
+   LEVEL COMPLETE
+   ======================================== */
+
+.stars-display {
+    margin: 1rem 0;
+}
+
+.stars-display .star {
+    font-size: 3rem;
+    color: var(--text-secondary);
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.stars-display .star.active {
+    color: var(--neon-yellow);
+    text-shadow: 0 0 20px var(--neon-yellow);
+    animation: starPop 0.5s ease;
+}
+
+@keyframes starPop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.final-score {
+    margin: 2rem 0;
+}
+
+.final-score .value {
+    font-size: 3rem;
+}
+
+/* ========================================
+   GAME OVER
+   ======================================== */
+
+#game-over .overlay-content h2 {
+    color: #ff4444;
+    text-shadow: 0 0 20px #ff4444;
+}
+
+.game-over-message {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 900px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+    
+    .level-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .instructions-content {
+        grid-template-columns: 1fr;
+    }
+    
+    #video-feed, #hand-canvas {
+        width: 150px;
+        height: 112px;
+    }
+}
+
+@media (max-width: 600px) {
+    .game-title {
+        font-size: 1.8rem;
+    }
+    
+    .level-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .level-btn {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .level-btn .level-number {
+        font-size: 1.8rem;
+    }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes neonFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+    }
+    20%, 24%, 55% {
+        opacity: 0.8;
+    }
+}
+
+.flicker {
+    animation: neonFlicker 3s infinite;
+}
+
+/* Scanline effect */
+#game-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.3;
+}
+
+/* ========================================
+   GLOBAL TOGGLE CONTROLS
+   ======================================== */
+
+#global-controls {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9998;
+}
+
+.global-toggle-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--text-secondary);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+
+.global-toggle-btn .toggle-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.global-toggle-btn .toggle-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+}
+
+.global-toggle-btn:hover {
+    background: rgba(0, 245, 255, 0.1);
+    border-color: var(--neon-cyan);
+}
+
+.global-toggle-btn.active {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.global-toggle-btn.active .toggle-label {
+    color: var(--neon-green);
+}
+
+.global-toggle-btn.active:hover {
+    background: rgba(0, 255, 136, 0.1);
+}
+
+/* ========================================
+   HAND CURSOR FOR MENU NAVIGATION
+   ======================================== */
+
+#menu-hand-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.05s ease-out;
+}
+
+#menu-hand-cursor .cursor-ring {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--neon-cyan);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: var(--glow-cyan);
+    transition: all 0.15s ease;
+}
+
+#menu-hand-cursor .cursor-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: var(--glow-cyan);
+    transition: all 0.15s ease;
+}
+
+/* Hovering over a button */
+#menu-hand-cursor.hovering .cursor-ring {
+    border-color: var(--neon-magenta);
+    box-shadow: var(--glow-magenta);
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+#menu-hand-cursor.hovering .cursor-dot {
+    background: var(--neon-magenta);
+    box-shadow: var(--glow-magenta);
+}
+
+/* Pinching state */
+#menu-hand-cursor.pinching .cursor-ring {
+    border-color: var(--neon-yellow);
+    box-shadow: 0 0 20px var(--neon-yellow), 0 0 40px var(--neon-yellow);
+    transform: translate(-50%, -50%) scale(0.7);
+}
+
+#menu-hand-cursor.pinching .cursor-dot {
+    background: var(--neon-yellow);
+    box-shadow: 0 0 20px var(--neon-yellow);
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+/* Hand-hover effect on buttons */
+.neon-btn.hand-hover {
+    background: rgba(255, 0, 255, 0.2) !important;
+    border-color: var(--neon-magenta) !important;
+    box-shadow: var(--glow-magenta) !important;
+    transform: scale(1.08);
+}
+
+.level-btn.hand-hover:not(.locked) {
+    background: rgba(255, 0, 255, 0.2) !important;
+    border-color: var(--neon-magenta) !important;
+    box-shadow: var(--glow-magenta) !important;
+    transform: translateY(-8px) scale(1.05);
+}
+
+.icon-btn.hand-hover {
+    background: rgba(255, 0, 255, 0.2) !important;
+    border-color: var(--neon-magenta) !important;
+    box-shadow: var(--glow-magenta) !important;
+}
+
