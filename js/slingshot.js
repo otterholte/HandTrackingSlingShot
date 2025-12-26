@@ -13,7 +13,8 @@ const Slingshot = (function() {
         MAX_PULL_DISTANCE: 350,      // Max pull for power calculation
         MIN_PULL_DISTANCE: 20,
         POWER_MULTIPLIER: 0.18,      // Launch power multiplier (reduced)
-        PROJECTILE_RADIUS: 20
+        PROJECTILE_RADIUS: 20,
+        MIN_HOLD_TIME: 1500          // Minimum hold time in ms before shot can be released
     };
     
     // State
@@ -34,6 +35,10 @@ const Slingshot = (function() {
     
     // Track where the hand was when pinch started
     let grabStartPos = { x: 0, y: 0 };
+    
+    // Track hold time for minimum aim duration
+    let grabStartTime = 0;
+    let holdDuration = 0;
     
     // Callbacks
     let onLaunch = null;
@@ -75,6 +80,8 @@ const Slingshot = (function() {
         projectileLaunched = false;
         canGrab = true;
         grabStartPos = { x: 0, y: 0 };
+        grabStartTime = 0;
+        holdDuration = 0;
     }
     
     // Handle pinch start (attempt to grab)
@@ -87,6 +94,10 @@ const Slingshot = (function() {
             x: handData.pinchPosition.x,
             y: handData.pinchPosition.y
         };
+        
+        // Record grab start time for minimum hold duration
+        grabStartTime = Date.now();
+        holdDuration = 0;
         
         isGrabbing = true;
         isPulling = true;
@@ -102,6 +113,9 @@ const Slingshot = (function() {
     // Pull is relative to where hand STARTED, not absolute position
     function handlePinchMove(handData) {
         if (!isGrabbing || !isPulling) return;
+        
+        // Update hold duration
+        holdDuration = Date.now() - grabStartTime;
         
         const handX = handData.pinchPosition.x;
         const handY = handData.pinchPosition.y;
@@ -142,11 +156,17 @@ const Slingshot = (function() {
     function handlePinchEnd(handData) {
         if (!isGrabbing) return null;
         
+        // Update final hold duration
+        holdDuration = Date.now() - grabStartTime;
+        
         isGrabbing = false;
         isPulling = false;
         
-        // Check if pulled far enough to launch
-        if (pullDistance > CONFIG.MIN_PULL_DISTANCE) {
+        // Check if held long enough AND pulled far enough to launch
+        const heldLongEnough = holdDuration >= CONFIG.MIN_HOLD_TIME;
+        const pulledFarEnough = pullDistance > CONFIG.MIN_PULL_DISTANCE;
+        
+        if (pulledFarEnough && heldLongEnough) {
             // Calculate launch velocity (opposite direction of pull)
             const launchAngle = pullAngle + Math.PI; // Opposite direction
             const launchPower = power * CONFIG.POWER_MULTIPLIER * CONFIG.MAX_PULL_DISTANCE;
@@ -164,7 +184,7 @@ const Slingshot = (function() {
             
             return velocity;
         } else {
-            // Not pulled far enough, reset
+            // Not held long enough or not pulled far enough, reset
             resetProjectile();
             if (onRelease) onRelease();
             return null;
@@ -233,6 +253,15 @@ const Slingshot = (function() {
                 1,
                 anchorX - 75,
                 anchorY + CONFIG.FORK_HEIGHT + 30
+            );
+            
+            // Calculate current hold duration in real-time for visual display
+            const currentHoldDuration = Date.now() - grabStartTime;
+            const holdProgress = Math.min(currentHoldDuration / CONFIG.MIN_HOLD_TIME, 1);
+            Renderer.drawHoldTimer(
+                holdProgress,
+                anchorX - 75,
+                anchorY + CONFIG.FORK_HEIGHT + 60
             );
         }
     }

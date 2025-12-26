@@ -482,6 +482,43 @@ const Renderer = (function() {
         ctx.shadowBlur = 0;
     }
     
+    // Draw hold timer indicator
+    function drawHoldTimer(progress, x, y) {
+        const barWidth = 150;
+        const barHeight = 15;
+        const isReady = progress >= 1;
+        
+        // Background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(x, y, barWidth, barHeight);
+        
+        // Progress fill
+        if (isReady) {
+            // Ready to fire - solid green glow
+            ctx.fillStyle = '#00ff88';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00ff88';
+        } else {
+            // Still charging - cyan fill
+            ctx.fillStyle = '#00f5ff';
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#00f5ff';
+        }
+        ctx.fillRect(x, y, barWidth * progress, barHeight);
+        
+        // Border
+        ctx.strokeStyle = isReady ? '#00ff88' : '#00f5ff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, barWidth, barHeight);
+        
+        // Label
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '12px Orbitron';
+        ctx.fillText(isReady ? 'READY!' : 'HOLD...', x, y - 5);
+        
+        ctx.shadowBlur = 0;
+    }
+    
     // Draw particles
     function drawParticles() {
         for (let i = particles.length - 1; i >= 0; i--) {
@@ -655,6 +692,7 @@ const Renderer = (function() {
         drawObstacle,
         drawTrajectory,
         drawPowerMeter,
+        drawHoldTimer,
         drawParticles,
         spawnParticles,
         drawHandCursor,

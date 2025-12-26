@@ -6,11 +6,16 @@
 const HandTracking = (function() {
     // Configuration
     const CONFIG = {
-        PINCH_THRESHOLD: 0.08,      // Normalized distance for pinch detection
-        SMOOTHING_FACTOR: 0.3,       // For position smoothing (0-1)
+        PINCH_START_THRESHOLD: 0.07,  // Fingers must be this close to START pinch
+        PINCH_END_THRESHOLD: 0.12,    // Fingers must be this far apart to END pinch (hysteresis)
+        RELEASE_CONFIRM_FRAMES: 3,    // Number of consecutive frames to confirm release
+        SMOOTHING_FACTOR: 0.3,        // For position smoothing (0-1)
         MIN_DETECTION_CONFIDENCE: 0.7,
         MIN_TRACKING_CONFIDENCE: 0.5
     };
+    
+    // Release confirmation counter
+    let releaseFrameCount = 0;
     
     // State
     let hands = null;
@@ -159,11 +164,22 @@ const HandTracking = (function() {
         
         // Calculate pinch strength (1 = full pinch, 0 = no pinch)
         currentHandData.pinchStrength = Math.max(0, Math.min(1, 
-            1 - (pinchDistance / (CONFIG.PINCH_THRESHOLD * 2))
+            1 - (pinchDistance / (CONFIG.PINCH_END_THRESHOLD * 2))
         ));
         
         const wasPinching = currentHandData.isPinching;
-        const isPinching = pinchDistance < CONFIG.PINCH_THRESHOLD;
+        
+        // Use hysteresis: different thresholds for start vs end
+        // To START pinching: fingers must be very close (tight threshold)
+        // To STOP pinching: fingers must be farther apart (loose threshold)
+        let isPinching;
+        if (wasPinching) {
+            // Currently pinching - use loose threshold to END
+            isPinching = pinchDistance < CONFIG.PINCH_END_THRESHOLD;
+        } else {
+            // Not pinching - use tight threshold to START
+            isPinching = pinchDistance < CONFIG.PINCH_START_THRESHOLD;
+        }
         
         // Calculate pinch position (midpoint between thumb and index)
         const rawPinchX = (thumbTip.x + indexTip.x) / 2;
@@ -199,18 +215,30 @@ const HandTracking = (function() {
         const palmY = ((palmBase.y + middleMcp.y) / 2) * canvasHeight;
         currentHandData.palmPosition = { x: palmX, y: palmY };
         
-        // Handle pinch state changes
+        // Handle pinch state changes with release confirmation
         if (isPinching && !wasPinching) {
-            // Pinch started
+            // Pinch started - immediate
+            releaseFrameCount = 0;
             currentHandData.isPinching = true;
             if (onPinchStart) onPinchStart(currentHandData);
         } else if (isPinching && wasPinching) {
             // Pinch continuing
+            releaseFrameCount = 0;  // Reset release counter
             if (onPinchMove) onPinchMove(currentHandData);
         } else if (!isPinching && wasPinching) {
-            // Pinch ended
-            currentHandData.isPinching = false;
-            if (onPinchEnd) onPinchEnd(currentHandData);
+            // Potential release - require confirmation over multiple frames
+            releaseFrameCount++;
+            
+            if (releaseFrameCount >= CONFIG.RELEASE_CONFIRM_FRAMES) {
+                // Confirmed release
+                currentHandData.isPinching = false;
+                releaseFrameCount = 0;
+                if (onPinchEnd) onPinchEnd(currentHandData);
+            } else {
+                // Not confirmed yet - still treat as pinching
+                isPinching = true;
+                if (onPinchMove) onPinchMove(currentHandData);
+            }
         }
         
         currentHandData.isPinching = isPinching;
