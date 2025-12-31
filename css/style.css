@@ -822,6 +822,361 @@ body::before {
 }
 
 /* ========================================
+   MOBILE / PWA STYLES
+   ======================================== */
+
+/* Safe area support for notched devices */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+        padding-top: max(0px, env(safe-area-inset-top));
+        padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+    
+    #game-hud {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+        padding-top: max(0.5rem, env(safe-area-inset-top));
+    }
+    
+    #global-controls {
+        right: max(20px, calc(env(safe-area-inset-right) + 10px));
+        top: max(80px, calc(env(safe-area-inset-top) + 60px));
+    }
+}
+
+/* Mobile landscape mode */
+@media (max-height: 500px) and (orientation: landscape) {
+    .game-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+        letter-spacing: 0.3em;
+        margin-top: 0.25rem;
+    }
+    
+    .menu-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+    
+    .neon-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.5rem;
+    }
+    
+    .neon-btn.small {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Level select - horizontal scrollable grid */
+    #level-select {
+        padding: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .level-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        max-width: 100%;
+        overflow-x: auto;
+        padding: 0.5rem;
+    }
+    
+    .level-btn {
+        width: 70px;
+        height: 70px;
+        flex-shrink: 0;
+    }
+    
+    .level-btn .level-number {
+        font-size: 1.3rem;
+    }
+    
+    .level-btn .level-name {
+        font-size: 0.6rem;
+        display: none;
+    }
+    
+    /* Instructions - single column, compact */
+    .instructions-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        max-width: 90vw;
+        justify-content: center;
+    }
+    
+    .instruction-item {
+        padding: 0.75rem;
+        flex: 1 1 200px;
+        max-width: 250px;
+    }
+    
+    .gesture-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .gesture-icon.pinch::before,
+    .gesture-icon.pull::before,
+    .gesture-icon.release::before,
+    .gesture-icon.wave::before {
+        font-size: 1.3rem;
+    }
+    
+    .instruction-item p {
+        font-size: 0.8rem;
+    }
+    
+    /* Game HUD - compact for landscape */
+    #game-hud {
+        padding: 0.5rem 1rem;
+    }
+    
+    .hud-left, .hud-center, .hud-right {
+        gap: 0.75rem;
+    }
+    
+    .label {
+        font-size: 0.6rem;
+    }
+    
+    .value {
+        font-size: 1.2rem;
+    }
+    
+    .level-name-display {
+        font-size: 0.75rem;
+    }
+    
+    .icon-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    /* Hide video feed on mobile to save space */
+    #video-feed, #hand-canvas {
+        width: 100px;
+        height: 75px;
+        bottom: 10px;
+        left: 10px;
+    }
+    
+    #hand-status {
+        bottom: 95px;
+        left: 10px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    #gesture-indicator {
+        bottom: 120px;
+        left: 10px;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    #gesture-text {
+        font-size: 0.8rem;
+    }
+    
+    /* Global controls - smaller */
+    #global-controls {
+        top: 50px;
+        right: 10px;
+        gap: 5px;
+    }
+    
+    .global-toggle-btn {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .global-toggle-btn .toggle-icon {
+        font-size: 1.2rem;
+    }
+    
+    .global-toggle-btn .toggle-label {
+        font-size: 0.5rem;
+    }
+    
+    /* Overlay content - compact */
+    .overlay-content {
+        padding: 1.5rem;
+        max-width: 90vw;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    
+    .overlay-content h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .overlay-content .neon-btn {
+        margin-top: 0.5rem;
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .stars-display .star {
+        font-size: 2rem;
+    }
+    
+    .final-score .value {
+        font-size: 2rem;
+    }
+    
+    /* Tutorial overlay - compact */
+    .tutorial-text {
+        font-size: 1.5rem;
+    }
+    
+    .tutorial-subtext {
+        font-size: 0.9rem;
+    }
+    
+    .tutorial-countdown {
+        font-size: 5rem;
+    }
+    
+    .tutorial-go {
+        font-size: 3rem;
+    }
+    
+    .hand-prompt {
+        padding: 0.75rem 1.25rem;
+    }
+    
+    .hand-prompt .prompt-icon {
+        font-size: 1.8rem;
+    }
+    
+    .hand-prompt .prompt-text {
+        font-size: 1.1rem;
+    }
+}
+
+/* Extra small screens (phones in landscape) */
+@media (max-height: 400px) and (orientation: landscape) {
+    .game-title {
+        font-size: 1.5rem;
+    }
+    
+    .subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .level-btn {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .level-btn .level-number {
+        font-size: 1rem;
+    }
+    
+    #video-feed, #hand-canvas {
+        display: none;
+    }
+    
+    #hand-status, #gesture-indicator {
+        display: none;
+    }
+    
+    .overlay-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Portrait orientation warning */
+@media (orientation: portrait) and (max-width: 768px) {
+    body::after {
+        content: '📱 Rotate your device for best experience';
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: var(--neon-cyan);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 0.9rem;
+        z-index: 10000;
+        border: 1px solid var(--neon-cyan);
+        animation: rotatePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes rotatePulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+    .neon-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .level-btn {
+        min-height: 60px;
+        min-width: 60px;
+    }
+    
+    .icon-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .global-toggle-btn {
+        min-height: 50px;
+        min-width: 50px;
+    }
+}
+
+/* PWA standalone mode */
+@media (display-mode: standalone) {
+    body {
+        /* Adjust for no browser chrome */
+    }
+    
+    #game-container {
+        /* Full viewport in standalone */
+    }
+}
+
+/* Disable text selection for game elements */
+#game-container,
+#game-canvas,
+.neon-btn,
+.level-btn,
+.icon-btn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* ========================================
    ANIMATIONS
    ======================================== */
 

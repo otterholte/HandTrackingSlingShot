@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Neon cyan glow filter -->
+    <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Neon magenta glow filter -->
+    <filter id="glow-magenta" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Orange glow for projectile -->
+    <filter id="glow-orange" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Radial gradient for background -->
+    <radialGradient id="bg-gradient" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" style="stop-color:#1a0a2e"/>
+      <stop offset="100%" style="stop-color:#0a0a0f"/>
+    </radialGradient>
+    
+    <!-- Projectile gradient -->
+    <radialGradient id="rock-gradient" cx="35%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:#ffcc00"/>
+      <stop offset="50%" style="stop-color:#ff6600"/>
+      <stop offset="100%" style="stop-color:#cc4400"/>
+    </radialGradient>
+    
+    <!-- Target gradient -->
+    <radialGradient id="target-gradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff66ff"/>
+      <stop offset="70%" style="stop-color:#ff00ff"/>
+      <stop offset="100%" style="stop-color:#cc00cc"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bg-gradient)"/>
+  
+  <!-- Grid pattern -->
+  <g stroke="#00f5ff" stroke-opacity="0.08" stroke-width="1">
+    <line x1="0" y1="128" x2="512" y2="128"/>
+    <line x1="0" y1="256" x2="512" y2="256"/>
+    <line x1="0" y1="384" x2="512" y2="384"/>
+    <line x1="128" y1="0" x2="128" y2="512"/>
+    <line x1="256" y1="0" x2="256" y2="512"/>
+    <line x1="384" y1="0" x2="384" y2="512"/>
+  </g>
+  
+  <!-- Slingshot - Left fork -->
+  <path d="M 130 420 Q 125 350 100 280" 
+        stroke="#00f5ff" stroke-width="12" stroke-linecap="round" fill="none" filter="url(#glow-cyan)"/>
+  
+  <!-- Slingshot - Right fork -->
+  <path d="M 130 420 Q 135 350 160 280" 
+        stroke="#00f5ff" stroke-width="12" stroke-linecap="round" fill="none" filter="url(#glow-cyan)"/>
+  
+  <!-- Elastic bands (stretched) -->
+  <line x1="100" y1="280" x2="220" y2="340" 
+        stroke="#ff00ff" stroke-width="5" stroke-linecap="round" filter="url(#glow-magenta)"/>
+  <line x1="160" y1="280" x2="220" y2="340" 
+        stroke="#ff00ff" stroke-width="5" stroke-linecap="round" filter="url(#glow-magenta)"/>
+  
+  <!-- Projectile (rock) -->
+  <circle cx="220" cy="340" r="35" fill="url(#rock-gradient)" filter="url(#glow-orange)"/>
+  <circle cx="210" cy="330" r="10" fill="rgba(255,255,200,0.5)"/>
+  
+  <!-- Trajectory dots -->
+  <circle cx="280" cy="290" r="8" fill="#ffff00" opacity="0.8" filter="url(#glow-orange)"/>
+  <circle cx="330" cy="250" r="7" fill="#ffff00" opacity="0.6" filter="url(#glow-orange)"/>
+  <circle cx="375" cy="220" r="6" fill="#ffff00" opacity="0.4" filter="url(#glow-orange)"/>
+  
+  <!-- Target -->
+  <circle cx="420" cy="200" r="50" fill="url(#target-gradient)" filter="url(#glow-magenta)"/>
+  <circle cx="420" cy="200" r="30" stroke="#ffaaff" stroke-width="3" fill="none"/>
+  <circle cx="420" cy="200" r="12" fill="#ffffff"/>
+  
+  <!-- Sparkle effects -->
+  <circle cx="450" cy="170" r="4" fill="#00f5ff" filter="url(#glow-cyan)"/>
+  <circle cx="390" cy="150" r="3" fill="#ff00ff" filter="url(#glow-magenta)"/>
+  <circle cx="470" cy="220" r="3" fill="#ffff00"/>
+  
+  <!-- Ground line -->
+  <line x1="0" y1="480" x2="512" y2="480" 
+        stroke="#00f5ff" stroke-width="4" filter="url(#glow-cyan)"/>
+</svg>
+
