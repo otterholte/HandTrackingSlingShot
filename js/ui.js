@@ -73,7 +73,19 @@ const UI = (function() {
         menuCursor = elements.menuHandCursor;
         
         setupEventListeners();
+        
+        // Unlock all level buttons immediately
+        unlockAllLevels();
+        
         console.log('UI initialized');
+    }
+    
+    // Unlock all level buttons (remove locked class)
+    function unlockAllLevels() {
+        const levelButtons = document.querySelectorAll('.level-btn');
+        levelButtons.forEach(btn => {
+            btn.classList.remove('locked');
+        });
     }
     
     // Setup event listeners
@@ -214,15 +226,10 @@ const UI = (function() {
         
         levelBtns.forEach(btn => {
             const levelId = parseInt(btn.dataset.level);
-            const isUnlocked = Levels.isUnlocked(levelId);
             const stars = Levels.getLevelStars(levelId);
             
-            // Update locked state
-            if (isUnlocked) {
-                btn.classList.remove('locked');
-            } else {
-                btn.classList.add('locked');
-            }
+            // All levels are always unlocked - never add locked class
+            btn.classList.remove('locked');
             
             // Update completed state
             if (stars > 0) {

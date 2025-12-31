@@ -189,8 +189,274 @@ const Levels = (function() {
                     type: 'weak', health: 1, points: 150, color: '#ff6600'
                 });
             }
+        },
+        
+        // Level 6: Domino Effect
+        {
+            id: 6,
+            name: "Domino Effect",
+            description: "Trigger a chain reaction to hit all targets",
+            shots: 2,
+            targetScore: 2500,
+            stars: [2000, 2500, 3500],
+            setup: function(width, height) {
+                const groundY = height - 20;
+                
+                // Domino chain - tall thin blocks
+                const dominoWidth = 15;
+                const dominoHeight = 80;
+                const startX = width * 0.4;
+                
+                // First domino chain (8 blocks)
+                for (let i = 0; i < 8; i++) {
+                    Physics.createBlock(startX + i * 35, groundY - dominoHeight/2, dominoWidth, dominoHeight, {
+                        type: 'weak', health: 1, points: 100, color: '#00f5ff'
+                    });
+                }
+                
+                // Ramp that leads to second chain
+                const ramp = Physics.createObstacle(width * 0.65, groundY - 60, 120, 15, {
+                    color: '#4444aa'
+                });
+                Matter.Body.setAngle(ramp, -Math.PI / 8);
+                
+                // Second elevated domino chain
+                const platformY = groundY - 150;
+                Physics.createObstacle(width * 0.75, platformY + 10, 200, 20, { color: '#333355' });
+                
+                for (let i = 0; i < 5; i++) {
+                    Physics.createBlock(width * 0.68 + i * 35, platformY - dominoHeight/2, dominoWidth, dominoHeight, {
+                        type: 'weak', health: 1, points: 150, color: '#ff1493'
+                    });
+                }
+                
+                // Targets at end of chains
+                Physics.createTarget(width * 0.72, groundY - 50, 25, { points: 600 });
+                Physics.createTarget(width * 0.88, platformY - 50, 25, { points: 600 });
+                
+                // Bonus target requires perfect chain
+                Physics.createTarget(width * 0.9, groundY - 250, 20, { points: 800 });
+            }
+        },
+        
+        // Level 7: The Pyramid
+        {
+            id: 7,
+            name: "The Pyramid",
+            description: "Demolish the ancient pyramid structure",
+            shots: 4,
+            targetScore: 3000,
+            stars: [2500, 3000, 4000],
+            setup: function(width, height) {
+                const groundY = height - 20;
+                const centerX = width * 0.7;
+                const blockSize = 40;
+                
+                // Build pyramid (6 levels)
+                const levels = 6;
+                for (let row = 0; row < levels; row++) {
+                    const blocksInRow = levels - row;
+                    const rowWidth = blocksInRow * blockSize;
+                    const startX = centerX - rowWidth / 2 + blockSize / 2;
+                    const y = groundY - blockSize / 2 - row * blockSize;
+                    
+                    for (let col = 0; col < blocksInRow; col++) {
+                        const x = startX + col * blockSize;
+                        const isEdge = col === 0 || col === blocksInRow - 1;
+                        
+                        Physics.createBlock(x, y, blockSize - 2, blockSize - 2, {
+                            type: isEdge ? 'strong' : 'normal',
+                            health: isEdge ? 3 : 1,
+                            points: 100 + row * 50,
+                            color: row % 2 === 0 ? '#ffaa00' : '#ff6600'
+                        });
+                    }
+                }
+                
+                // Targets hidden inside pyramid
+                Physics.createTarget(centerX - 40, groundY - blockSize * 2, 20, { points: 500 });
+                Physics.createTarget(centerX + 40, groundY - blockSize * 2, 20, { points: 500 });
+                Physics.createTarget(centerX, groundY - blockSize * 4, 22, { points: 700 });
+                
+                // Crown jewel at top
+                Physics.createTarget(centerX, groundY - blockSize * 6 - 30, 25, { points: 1000 });
+            }
+        },
+        
+        // Level 8: The Great Wall
+        {
+            id: 8,
+            name: "The Great Wall",
+            description: "Break through the reinforced wall",
+            shots: 5,
+            targetScore: 3500,
+            stars: [3000, 3500, 4500],
+            setup: function(width, height) {
+                const groundY = height - 20;
+                const wallX = width * 0.6;
+                
+                // Dense wall of blocks (5 columns, 6 rows)
+                const blockW = 35;
+                const blockH = 50;
+                const cols = 5;
+                const rows = 6;
+                
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        const x = wallX + col * blockW;
+                        const y = groundY - blockH / 2 - row * blockH;
+                        
+                        // Front column is strongest
+                        const isStrong = col === 0;
+                        const isMedium = col === 1;
+                        
+                        Physics.createBlock(x, y, blockW - 2, blockH - 2, {
+                            type: isStrong ? 'strong' : (isMedium ? 'normal' : 'weak'),
+                            health: isStrong ? 4 : (isMedium ? 2 : 1),
+                            points: 100 + col * 30,
+                            color: isStrong ? '#00ff88' : (isMedium ? '#00f5ff' : '#ff1493')
+                        });
+                    }
+                }
+                
+                // Targets behind the wall
+                const behindWall = wallX + cols * blockW + 60;
+                Physics.createTarget(behindWall, groundY - 80, 25, { points: 600 });
+                Physics.createTarget(behindWall, groundY - 180, 25, { points: 600 });
+                Physics.createTarget(behindWall, groundY - 280, 25, { points: 600 });
+                
+                // One target above wall
+                Physics.createTarget(wallX + blockW * 2, groundY - rows * blockH - 50, 22, { points: 500 });
+            }
+        },
+        
+        // Level 9: Sky High
+        {
+            id: 9,
+            name: "Sky High",
+            description: "Reach targets across multiple platforms",
+            shots: 5,
+            targetScore: 4000,
+            stars: [3500, 4000, 5000],
+            setup: function(width, height) {
+                const groundY = height - 20;
+                
+                // Platform 1 (low right)
+                Physics.createObstacle(width * 0.55, groundY - 80, 150, 20, { color: '#333355' });
+                createSmallTower(width * 0.55, groundY - 100, '#00f5ff');
+                Physics.createTarget(width * 0.55, groundY - 200, 22, { points: 400 });
+                
+                // Platform 2 (mid center)
+                Physics.createObstacle(width * 0.7, groundY - 200, 130, 20, { color: '#333355' });
+                createSmallTower(width * 0.7, groundY - 220, '#ff1493');
+                Physics.createTarget(width * 0.7, groundY - 320, 22, { points: 500 });
+                
+                // Platform 3 (high right)
+                Physics.createObstacle(width * 0.85, groundY - 320, 120, 20, { color: '#333355' });
+                Physics.createBlock(width * 0.85, groundY - 370, 50, 80, {
+                    type: 'strong', health: 3, points: 200, color: '#00ff88'
+                });
+                Physics.createTarget(width * 0.85, groundY - 430, 25, { points: 600 });
+                
+                // Moving target in the sky
+                Physics.createTarget(width * 0.65, groundY - 400, 25, {
+                    points: 800,
+                    movingX: true,
+                    moveRange: 100,
+                    moveSpeed: 0.002
+                });
+                
+                // Ground level blocks to knock into platforms
+                Physics.createBlock(width * 0.45, groundY - 40, 60, 80, {
+                    type: 'normal', health: 2, points: 150, color: '#ffaa00'
+                });
+            }
+        },
+        
+        // Level 10: Final Boss
+        {
+            id: 10,
+            name: "Final Boss",
+            description: "The ultimate challenge - destroy the Neon Fortress!",
+            shots: 6,
+            targetScore: 5000,
+            stars: [4500, 5500, 7000],
+            setup: function(width, height) {
+                const groundY = height - 20;
+                const fortressX = width * 0.7;
+                
+                // Main fortress structure
+                // Front wall (indestructible)
+                Physics.createObstacle(fortressX - 120, groundY - 175, 25, 350, { color: '#222244' });
+                
+                // Inner structure - multiple layers
+                const innerX = fortressX;
+                
+                // Ground floor
+                for (let i = 0; i < 4; i++) {
+                    Physics.createBlock(innerX + i * 45, groundY - 40, 40, 80, {
+                        type: 'strong', health: 3, points: 150, color: '#00ff88'
+                    });
+                }
+                Physics.createBlock(innerX + 67, groundY - 100, 180, 25, {
+                    type: 'normal', health: 2, points: 100, color: '#00f5ff'
+                });
+                
+                // Second floor
+                for (let i = 0; i < 3; i++) {
+                    Physics.createBlock(innerX + 22 + i * 45, groundY - 160, 40, 80, {
+                        type: 'normal', health: 2, points: 150, color: '#ff1493'
+                    });
+                }
+                Physics.createBlock(innerX + 67, groundY - 220, 140, 25, {
+                    type: 'weak', health: 1, points: 100, color: '#ffaa00'
+                });
+                
+                // Third floor - tower
+                Physics.createBlock(innerX + 67, groundY - 280, 60, 80, {
+                    type: 'strong', health: 3, points: 200, color: '#00ff88'
+                });
+                Physics.createBlock(innerX + 67, groundY - 340, 40, 40, {
+                    type: 'normal', health: 2, points: 150, color: '#ff6600'
+                });
+                
+                // Targets - strategically placed
+                Physics.createTarget(innerX + 20, groundY - 150, 22, { points: 500 });
+                Physics.createTarget(innerX + 115, groundY - 150, 22, { points: 500 });
+                Physics.createTarget(innerX + 67, groundY - 280, 20, { points: 600 });
+                
+                // Crown target (boss)
+                Physics.createTarget(innerX + 67, groundY - 400, 30, { points: 1000 });
+                
+                // Moving guard targets
+                Physics.createTarget(width * 0.45, groundY - 200, 22, {
+                    points: 400,
+                    movingY: true,
+                    moveRange: 80,
+                    moveSpeed: 0.003
+                });
+                
+                // Bouncy deflector to make it harder
+                const deflector = Physics.createObstacle(width * 0.5, groundY - 100, 80, 15, {
+                    color: '#4444aa', restitution: 0.9
+                });
+                Matter.Body.setAngle(deflector, Math.PI / 6);
+            }
         }
     ];
+    
+    // Helper function to create a small tower (for Sky High level)
+    function createSmallTower(x, baseY, color) {
+        Physics.createBlock(x - 25, baseY - 30, 20, 60, {
+            type: 'normal', health: 1, points: 100, color: color
+        });
+        Physics.createBlock(x + 25, baseY - 30, 20, 60, {
+            type: 'normal', health: 1, points: 100, color: color
+        });
+        Physics.createBlock(x, baseY - 70, 70, 20, {
+            type: 'weak', health: 1, points: 50, color: color
+        });
+    }
     
     // Helper function to create a standard tower
     function createTower(centerX, groundY, levels, color) {
@@ -227,7 +493,7 @@ const Levels = (function() {
     
     // Current state
     let currentLevel = 1;
-    let unlockedLevels = [1];
+    let unlockedLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];  // All levels unlocked
     let levelScores = {};
     let levelStars = {};
     
@@ -310,9 +576,9 @@ const Levels = (function() {
         return LEVEL_DATA;
     }
     
-    // Check if level is unlocked
+    // Check if level is unlocked - ALL LEVELS ALWAYS UNLOCKED
     function isUnlocked(levelId) {
-        return unlockedLevels.includes(levelId);
+        return true;  // All levels are always available
     }
     
     // Unlock level

@@ -211,7 +211,7 @@ const Physics = (function() {
             label: 'target',
             collisionFilter: { 
                 category: CATEGORIES.TARGET,
-                mask: CATEGORIES.GROUND | CATEGORIES.WALL | CATEGORIES.PROJECTILE | CATEGORIES.BLOCK
+                mask: CATEGORIES.GROUND | CATEGORIES.WALL | CATEGORIES.PROJECTILE | CATEGORIES.BLOCK | CATEGORIES.OBSTACLE
             },
             restitution: 0.5,
             friction: 0.3,
